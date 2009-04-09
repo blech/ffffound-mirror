@@ -25,16 +25,18 @@ def id_from_url(flickr)
 
 end
 
-sql = "select orig_url, id from images where orig_url like '%flickr%'"
+sql = "select orig_url, id, count from images where orig_url like '%flickr%'"
 db.execute(sql) do |row|
   flickr = row[0]
   ffffound_id = row[1]
+  count = row[2]
   
   flickr_id = id_from_url(flickr)
   if not flickr_id
-    puts flickr
+    puts "Could not find Flickr image ID from url #{flickr}"
+    die
   else
-    puts flickr_id, ffffound_id
+    puts "#{ffffound_id} => #{flickr_id} (#{count} bookmarks)"
   end
 end
 
