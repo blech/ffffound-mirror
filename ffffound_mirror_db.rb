@@ -9,15 +9,14 @@ require 'sqlite3'
 require 'time'
 require 'date'
 
-def populate_db(db)
+def populate_db(db, user, type)
   domain = "http://ffffound.com/"
-  user   = "blech"
-  type   = "found"
   offset = 0
 
   images_sql = <<EOS
-  insert into images (id, url, src, title, orig_url, orig_src, count, date, related) 
-              values (:id, :ffffound_url, :ffffound_img, :title, :orig_url, :orig_img, :count, :date, :rel)
+  INSERT OR REPLACE INTO 
+      images (id, url, src, title, orig_url, orig_src, count, date, related) 
+      values (:id, :ffffound_url, :ffffound_img, :title, :orig_url, :orig_img, :count, :date, :rel)
 EOS
 
   images_ins  = db.prepare(images_sql)
@@ -135,9 +134,20 @@ end
 
 path = Etc.getpwuid.dir + '/.ffffound.db' # ick
 db = SQLite3::Database.new(path)
+
+# needs work
+user = ARGV[0] 
+type = ARGV[1] || 'found'
+  
+if not user:
+  puts "A ffffound username must be supplied"
+  exit
+else
+  puts "Invoked for posts by #{user} of type #{type}"
+end
   
 create_db(db)
-populate_db(db)
+populate_db(db, user, type)
 exit
 
 # puts img.to_json 
