@@ -25,7 +25,12 @@ EOS
   img = []
   
   while
-    doc = Hpricot(open("#{ domain }/home/#{ user }/#{ type }/?offset=#{ offset }&"))
+    if user == "all"
+      doc = Hpricot(open("#{ domain }/?offset=#{ offset }&"))
+    else
+      doc = Hpricot(open("#{ domain }/home/#{ user }/#{ type }/?offset=#{ offset }&"))
+    end
+    
     images = (doc/"blockquote.asset")
     puts "Got #{ images.size.to_s } images at offset #{ offset.to_s }"
     break if (images.size == 0)
@@ -132,19 +137,23 @@ EOC
   return true
 end
 
-path = Etc.getpwuid.dir + '/.ffffound.db' # ick
-db = SQLite3::Database.new(path)
-
 # needs work
 user = ARGV[0] 
 type = ARGV[1] || 'found'
-  
+
 if not user:
   puts "A ffffound username must be supplied"
   exit
 else
+  if user == "--all"
+     puts "Invoked for all posts"
+     user = "all"
+  end
   puts "Invoked for posts by #{user} of type #{type}"
 end
+
+path = Etc.getpwuid.dir + '/.ffffound-'+user+'.db' # ick
+db = SQLite3::Database.new(path)
   
 create_db(db)
 populate_db(db, user, type)
