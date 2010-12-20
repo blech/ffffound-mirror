@@ -25,7 +25,7 @@ EOS
   img = []
   
   while
-    if user == "all"
+    if user == "all" # wow, this is naughty
       doc = Hpricot(open("#{ domain }/?offset=#{ offset }&"))
     else
       doc = Hpricot(open("#{ domain }/home/#{ user }/#{ type }/?offset=#{ offset }&"))
@@ -78,6 +78,8 @@ EOS
     
       info[:ffffound_url] = ffffound_url
       info[:ffffound_img] = ffffound_img
+    
+      download_file(ffffound_img, id)
     
       # might as well get related asset IDs
       rel = Array.new
@@ -137,7 +139,19 @@ EOC
   return true
 end
 
-# needs work
+def download_file(url, id)
+  # does it exist?
+  if not File.exist?('images/'+id+'.jpg'):
+  
+    writeOut = open("images/"+id+'.jpg', 'wb')
+    writeOut.write(open(url).read)
+    writeOut.close
+    
+    puts '  downloaded ' + id
+  end
+end
+
+# this needs work
 user = ARGV[0] 
 type = ARGV[1] || 'found'
 
@@ -152,9 +166,15 @@ else
   puts "Invoked for posts by #{user} of type #{type}"
 end
 
-path = Etc.getpwuid.dir + '/.ffffound-'+user+'.db' # ick
+begin
+  FileUtils.mkdir "images"
+  FileUtils.mkdir "db"
+rescue
+end
+
+path = 'db/ffffound-'+user+'.db' # ick
 db = SQLite3::Database.new(path)
-  
+
 create_db(db)
 populate_db(db, user, type)
 exit
