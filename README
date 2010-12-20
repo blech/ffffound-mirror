@@ -1,0 +1,8 @@
+This script will download the ffffound archive of a given user.
+
+There's a database of files in db/ffffound_mirror.db (in SQLite 3 format) and 
+ffffound's version of the images (which may be at a lower resolution than the 
+originals) are downloaded to images/
+
+This uses scraping, since ffffound have no published API. It comes with no 
+guarantees.
