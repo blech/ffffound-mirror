@@ -1,14 +1,8 @@
 #!/usr/bin/ruby
 require 'rubygems'
 
-require 'etc' 
 require 'fileutils'
-require 'hpricot'
-require 'json'
-require 'open-uri'
 require 'sqlite3'
-require 'time'
-require 'date'
 
 def make_sequence(db)
   filenames = {}
