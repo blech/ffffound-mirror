@@ -54,7 +54,7 @@ EOS
     
       datestr  = desc.gsub(/.*<br ?\/?>/, "")
       datestr  = datestr.gsub(/<a h.*/, "")
-      datestr  = datestr+" +0800" # ffffound uses Japanese local time? TODO check
+      datestr  = datestr+" +0900" # ffffound uses Japanese time, UTC +0900
       begin
         dt = Time.parse(datestr)
       rescue
@@ -96,11 +96,8 @@ EOS
       img.unshift(info)
   
       # put in db
-      begin
-        images_ins.bind_params(info)
-        images_ins.execute
-      rescue
-      end
+      images_ins.bind_params(info)
+      images_ins.execute
   
     end
   
@@ -132,6 +129,14 @@ EOC
                   source INTEGER
                   related INTEGER);
 EOC
+
+  tumblr = <<EOC
+    CREATE TABLE tumblr  (id INTEGER PRIMARY KEY,
+                     ffffound_id TEXT,
+                     tumblr_id INTEGER,
+                     create_status INTEGER,
+                     edit_status INTEGER);
+EOC
   
   db.execute(images)
   db.execute(related)
@@ -151,7 +156,15 @@ def download_file(url, id)
   end
 end
 
-# this needs work
+def create_paths()
+  ['images', 'db'].each do |path|
+    if not File.exist?(path):
+      FileUtils.mkdir(path)
+    end
+  end
+end
+
+# this needs work (is there a more idiomatic way to do this?)
 user = ARGV[0] 
 type = ARGV[1] || 'found'
 
@@ -166,11 +179,7 @@ else
   puts "Invoked for posts by #{user} of type #{type}"
 end
 
-begin
-  FileUtils.mkdir "images"
-  FileUtils.mkdir "db"
-rescue
-end
+create_paths()
 
 path = 'db/ffffound-'+user+'.db' # ick
 db = SQLite3::Database.new(path)
