@@ -17,18 +17,15 @@ It produces a folder full of images named according to ffffound's ID scheme, and
 
 I'm not sure I've fixed the directory making sections. If you get errors, manually create images and db directories.
 
-## ffffound_fetch_originals_from_db.rb
+## fetch_originals.rb
 
-Using the database, this attempts to revisit the original image URL stored by ffffound and to download the image (which is hopefully of higher resolution than ffffound's copy). These images are saved to an 'originals' directory.
+Using the database, this attempts to revisit the original image URL stored by ffffound and to download the image (as long as it's higher resolution than ffffound's copy). These images are saved to an 'originals' directory inside 'images', with the same ffffound ID 
+as the counterpart in the images/ directory.
 
 ### Known issues
 
-The script should save images with their ffffound ID, but doesn't.
-
-Flickr images that are made private or deleted aren't correctly detected.
-
-Other images are downloaded even when no longer valid image files.
-
+* Other images may be downloaded if the error page is larger than the image size.
+* Filename suffixes can be wrong.
 
 ## Experimental scripts
 
@@ -42,6 +39,9 @@ For images posted from Flickr, find favourites count (and compare to the ffffoun
 
 Uploads the ffffound copies of images to Tumblr as drafts, and publishes (and backdates) them. Very much a work in progress, with authentication being particularly weird.
 
+This also runs into Tumblr's daily post limits. Beware.
+
 ## make_sequence.rb
 
-Makes an image sequence suitable for importing to QuickTime to be animated.
+Makes an image sequence suitable for importing to QuickTime to be animated. This 
+doesn't know about the new images/originals/ path layout.
