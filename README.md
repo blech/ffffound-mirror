@@ -31,17 +31,17 @@ as the counterpart in the images/ directory.
 
 These may included hardcoded filenames, or simply not work. Use with caution.
 
-## ffffound_from_flickr.rb
+### ffffound_from_flickr.rb
 
 For images posted from Flickr, find favourites count (and compare to the ffffound count) and (optionally) mark as a favourite at Flickr (requires Flickr auth).
 
-## ffffound_to_tumblr.rb
+### ffffound_to_tumblr.rb
 
 Uploads the ffffound copies of images to Tumblr as drafts, and publishes (and backdates) them. Very much a work in progress, with authentication being particularly weird.
 
 This also runs into Tumblr's daily post limits. Beware.
 
-## make_sequence.rb
+### make_sequence.rb
 
 Makes an image sequence suitable for importing to QuickTime to be animated. This 
 doesn't know about the new images/originals/ path layout.
