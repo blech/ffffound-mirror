@@ -145,6 +145,7 @@ EOC
 end
 
 def download_file(url, id)
+  # TODO file type awareness
   # does it exist?
   if not File.exist?('images/'+id+'.jpg'):
   
