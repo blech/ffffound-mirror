@@ -48,7 +48,7 @@ def get_flickr_ids()
 
   db.execute(sql) do |row|
     flickr_id = id_from_url(row[0])
-    if flickr_id:
+    if flickr_id
       info = {'flickr_id' => flickr_id, 'ffffound_id' => row[1], 'ffffound_count' => row[2]}
       ids.push(info)
     end

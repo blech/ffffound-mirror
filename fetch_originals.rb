@@ -29,7 +29,7 @@ end
 
 def download_file(url, filename, id)
   # does it exist?
-  if File.exist?('images/originals/'+filename):
+  if File.exist?('images/originals/'+filename)
     puts '- already downloaded '+url+' to '+filename
     return
   end
@@ -61,7 +61,7 @@ end
 user = ARGV[0] 
 type = ARGV[1] || 'found'
 
-if not user:
+if not user
   puts "A ffffound username must be supplied"
   exit
 else

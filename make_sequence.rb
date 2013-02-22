@@ -33,7 +33,7 @@ end
 # this needs work
 user = ARGV[0] 
 
-if not user:
+if not user
   puts "A ffffound username must be supplied"
   exit
 else

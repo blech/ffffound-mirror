@@ -56,7 +56,7 @@ end
 
 def prepare_upload(row, images_ins)
   image_path = "images/#{row[0]}.jpg"
-  if not File.exists?(image_path):
+  if not File.exists?(image_path)
     puts "#{image_path} not found (original URL #{row[1]})"
     return
   end
