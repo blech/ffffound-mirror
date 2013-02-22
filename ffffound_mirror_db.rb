@@ -8,6 +8,7 @@ require 'open-uri'
 require 'sqlite3'
 require 'time'
 require 'date'
+require 'fileutils'
 
 def populate_db(db, user, type)
   domain = "http://ffffound.com/"
@@ -96,8 +97,8 @@ EOS
       img.unshift(info)
   
       # put in db
-      images_ins.bind_params(info)
-      images_ins.execute
+      
+      images_ins.execute(info)
   
     end
   
@@ -147,7 +148,7 @@ end
 def download_file(url, id)
   # TODO file type awareness
   # does it exist?
-  if not File.exist?('images/'+id+'.jpg'):
+  if not File.exist?('images/'+id+'.jpg')
   
     writeOut = open("images/"+id+'.jpg', 'wb')
     writeOut.write(open(url).read)
@@ -159,7 +160,7 @@ end
 
 def create_paths()
   ['images', 'db'].each do |path|
-    if not File.exist?(path):
+    if not File.exist?(path)
       FileUtils.mkdir(path)
     end
   end
@@ -169,7 +170,7 @@ end
 user = ARGV[0] 
 type = ARGV[1] || 'found'
 
-if not user:
+if not user
   puts "A ffffound username must be supplied"
   exit
 else
