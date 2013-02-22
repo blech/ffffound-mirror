@@ -167,7 +167,7 @@ def create_paths()
 end
 
 # this needs work (is there a more idiomatic way to do this?)
-user = ARGV[0] 
+user = ARGV[0]
 type = ARGV[1] || 'found'
 
 if not user
@@ -190,5 +190,5 @@ create_db(db)
 populate_db(db, user, type)
 exit
 
-# puts img.to_json 
+# puts img.to_json
 # DONE puts img.to_database_table(s)
