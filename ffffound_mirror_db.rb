@@ -22,37 +22,37 @@ EOS
 
   images_ins  = db.prepare(images_sql)
   # related_ins = db.prepare( "insert into related values (?, ?, ?)" )
-  
+
   img = []
-  
+
   while
     if user == "all" # wow, this is naughty
       doc = Hpricot(open("#{ domain }/?offset=#{ offset }&"))
     else
       doc = Hpricot(open("#{ domain }/home/#{ user }/#{ type }/?offset=#{ offset }&"))
     end
-    
+
     images = (doc/"blockquote.asset")
     puts "Got #{ images.size.to_s } images at offset #{ offset.to_s }"
     break if (images.size == 0)
-    
+
     images.each do |image|
       # can I make this block into a method somehow?
       info = {}
-    
+
       # image title
       title_elem = (image/"div.title")
       info[:title] = title_elem.at("a").inner_html
-    
+
       # original source image
       src_elem = (image/"div.title")
       info[:orig_url] = src_elem.at("a")["href"]
-      
+
       # from description, break out img url, date posted (relative!), count
       desc_elem = (image/"div.description")
       desc = desc_elem.inner_html
       info[:orig_img] = desc.gsub(/<br ?\/?>.*/, "")
-    
+
       datestr  = desc.gsub(/.*<br ?\/?>/, "")
       datestr  = datestr.gsub(/<a h.*/, "")
       datestr  = datestr+" +0900" # ffffound uses Japanese time, UTC +0900
@@ -61,30 +61,30 @@ EOS
       rescue
       end
       info[:date] = dt.to_i
-    
+
       count    = desc_elem.at("a").inner_text
       count    = count.gsub(/[\D]/, "")
       info[:count] = count
-    
+
       # ffffound image URL and page URL, and ffffound ID (could generate
       # URL from ID but would lose ?c form; src would lose _m)
       image_block = (image/"table td")
       ffffound_url = image_block.at("a")['href']
       ffffound_img = image_block.at("img")['src']
-    
+
       id = ffffound_img
       id = ffffound_img.split('/')[6]
       id = id.gsub(/_.*/, "")
       info[:id] = id
-    
+
       info[:ffffound_url] = ffffound_url
       info[:ffffound_img] = ffffound_img
-    
+
       download_file(ffffound_img, id)
-    
+
       # might as well get related asset IDs
       rel = Array.new
-      
+
       relateds = (image/"div.related_to_item_xs")
       relateds.each do |related|
         path = related.at("a")['href']
@@ -92,20 +92,20 @@ EOS
         rel.push(id)
         # TODO normalised table for related IDs
       end
-    
+
       info[:rel] = rel.join(",")
       img.unshift(info)
-  
+
       # put in db
-      
+
       images_ins.execute(info)
-  
+
     end
-  
+
     break if (images.size < 25) # more efficient than doing another fetch
     offset = offset + 25
   end
-  
+
   puts "Got #{ img.size } images"
 end
 
@@ -123,7 +123,7 @@ def create_db(db)
                  related TEXT,
                  posted BOOL);
 EOC
-  
+
   related = <<EOC
     CREATE TABLE IF NOT EXISTS
         related  (id INTEGER PRIMARY KEY,
@@ -138,10 +138,10 @@ EOC
                      create_status INTEGER,
                      edit_status INTEGER);
 EOC
-  
+
   db.execute(images)
   db.execute(related)
-  
+
   return true
 end
 
@@ -149,11 +149,11 @@ def download_file(url, id)
   # TODO file type awareness
   # does it exist?
   if not File.exist?('images/'+id+'.jpg')
-  
+
     writeOut = open("images/"+id+'.jpg', 'wb')
     writeOut.write(open(url).read)
     writeOut.close
-    
+
     puts '  downloaded ' + id
   end
 end
