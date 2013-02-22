@@ -72,7 +72,9 @@ else
   puts "Invoked for posts by #{user} of type #{type}"
 end
 
-FileUtils.mkdir "images/originals"
+if not File.exist?("images/originals")
+    FileUtils.mkdir "images/originals"
+end
 
 path = 'db/ffffound-'+user+'.db' # ick
 db = SQLite3::Database.new(path)
