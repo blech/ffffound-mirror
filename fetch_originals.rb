@@ -5,8 +5,10 @@ require 'open-uri'
 require 'sqlite3'
 require 'fileutils'
 
+
 def fetch_orignals(db)
   filenames = {}
+  filetypes = ['jpg', 'png', 'gif']
 
   images_sql = "SELECT id, orig_src from images"
 
@@ -16,8 +18,10 @@ def fetch_orignals(db)
 
     # this needs work
     filetype = src.split('.')[-1][0,3]
-    if filetype == "jpe"
-        filetype = "jpg"        
+    filetype.downcase!
+
+    if not filetypes.include? filetype
+        filetype = "jpg"
     end
 
     filename = id+"."+filetype
@@ -26,6 +30,7 @@ def fetch_orignals(db)
     download_file(url, filename, id)
   end
 end
+
 
 def download_file(url, filename, id)
   # does it exist?
@@ -50,11 +55,14 @@ def download_file(url, filename, id)
     writeOut.write(image_data)
     writeOut.close
     puts '+ downloaded ' + url + " to " + filename
+    
+    # write Finder metadata for download location
+    `xattr -w com.apple.metadata:kMDItemWhereFroms "#{url}" images/originals/#{filename}`
   else
     puts '  downloaded image was no bigger: not saved'
   end
 
-  puts ""  
+  puts "" 
 end
 
 # this needs work
