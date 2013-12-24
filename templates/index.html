@@ -1,7 +1,8 @@
-<h1>{{ offset }}</h1>
+<h1>{{ site }}</h1>
 
 {% for image in images %}
-    <b>{{ image.3 }}</b> {{ image.6 }}<br>
-    {{image }}<br>
-    <img src="images/{{ image.0 }}.jpg"><br>
+    <div style="margin-bottom:16px;">
+        <b><a href="{{ image.4 }}">{{ image.3 }}</a></b> {{ image.6|iso_date }}<br>
+        <img src="{{ image.2 }}">
+    </div>
 {% endfor %}
